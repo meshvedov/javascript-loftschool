@@ -96,12 +96,10 @@ function returnBadArguments(fn) {
 function calculator() {
     let number = arguments[0];
 
-    if (typeof arguments[0] != 'number') {
-        throw new Error('number is not a number');
-    }
-
     if (number == undefined) {
         number = 0;
+    } else if (typeof arguments[0] != 'number') {
+        throw new Error('number is not a number');
     }
 
     let obj = {
