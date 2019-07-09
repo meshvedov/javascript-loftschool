@@ -10,6 +10,18 @@
  Зарпещено использовать встроенные методы для работы с массивами
  */
 function isAllTrue(array, fn) {
+    if (!Array.isArray(array) || array.length == 0) {
+        throw new Error('empty array');
+    } else if (typeof fn != 'function') {
+        throw new Error('fn is not a function');
+    }
+    for (let i = 0; i < array.length; i++) {
+        if (!fn(array[i])) {
+            return false;
+        }
+    }
+
+    return true
 }
 
 /*
@@ -22,17 +34,49 @@ function isAllTrue(array, fn) {
  Зарпещено использовать встроенные методы для работы с массивами
  */
 function isSomeTrue(array, fn) {
+    if (!Array.isArray(array) || array.length == 0) {
+        throw new Error('empty array');
+    } else if (typeof fn != 'function') {
+        throw new Error('fn is not a function');
+    }
+    for (let i = 0; i < array.length; i++) {
+        if (fn(array[i])) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 /*
  Задача 3:
  Функция принимает заранее неизветсное количество аргументов, первым из которых является функция fn
- Функция должна поочередно запусти fn для каждого переданного аргумента (кроме самой fn)
+ Функция должна поочередно запустить fn для каждого переданного аргумента (кроме самой fn)
  Функция должна вернуть массив аргументов, для которых fn выбросила исключение
  Необходимо выбрасывать исключение в случаях:
  - fn не является функцией (с текстом "fn is not a function")
  */
 function returnBadArguments(fn) {
+    if (typeof fn != 'function') {
+        throw new Error('fn is not a function');
+    }
+
+    let newArr = [];
+    let arr = [];
+
+    arr = [...arguments];
+    if (arr.length == 1) {
+        return [];
+    }
+    for (let i = 1; i < arr.length; i++) {
+        try {
+            fn(arr[i]);
+        } catch (e) {
+            newArr.push(arr[i]);
+        }
+    }
+
+    return newArr;
 }
 
 /*
@@ -50,6 +94,59 @@ function returnBadArguments(fn) {
  - какой-либо из аргументов div является нулем (с текстом "division by 0")
  */
 function calculator() {
+    let number = arguments[0];
+
+    if (typeof arguments[0] != 'number') {
+        throw new Error('number is not a number');
+    }
+
+    if (number == undefined) {
+        number = 0;
+    }
+
+    let obj = {
+        sum() {
+            let args = [...arguments];
+
+            for (let i = 0; i < args.length; i++) {
+                number += args[i];
+            }
+
+            return number;
+        },
+        dif() {
+            let args = [...arguments];
+
+            for (let i = 0; i < args.length; i++) {
+                number -= args[i];
+            }
+
+            return number;
+        },
+        div() {
+            let args = [...arguments];
+
+            for (let i = 0; i < args.length; i++) {
+                if (args[i] === 0) {
+                    throw new Error('division by 0');
+                }
+                number /= args[i];
+            }
+
+            return number;
+        },
+        mul() {
+            let args = [...arguments];
+
+            for (let i = 0; i < args.length; i++) {
+                number *= args[i];
+            }
+
+            return number;
+        }
+    }
+
+    return obj;
 }
 
 export {
