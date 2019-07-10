@@ -234,6 +234,7 @@ describe('ДЗ 3 - объекты и массивы', () => {
             assert.deepEqual(result, target);
 
             target = nativeSlice.call(array, 0, -1);
+            debugger;
             result = slice(array, 0, -1);
             assert.deepEqual(result, target);
 

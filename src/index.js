@@ -5,6 +5,15 @@
  Напишите аналог встроенного метода forEach для работы с массивами
  */
 function forEach(array, fn) {
+    let arrLength = array.length;
+
+    let newArr = [];
+
+    for (let i = 0; i < arrLength; i++) {
+        newArr.push(fn(array[i], i, array));
+    }
+
+    return newArr;
 }
 
 /*
@@ -12,6 +21,14 @@ function forEach(array, fn) {
  Напишите аналог встроенного метода map для работы с массивами
  */
 function map(array, fn) {
+    let arrLength = array.length;
+    let newArr = [];
+
+    for (let i = 0; i < arrLength; i++) {
+        newArr.push(fn(array[i], i, array));
+    }
+
+    return newArr;
 }
 
 /*
@@ -19,6 +36,19 @@ function map(array, fn) {
  Напишите аналог встроенного метода reduce для работы с массивами
  */
 function reduce(array, fn, initial) {
+    let i = 0;
+    let arrayLength = array.length;
+
+    if (initial == undefined) {
+        initial = array[0];
+        i = 1;
+    }
+
+    for (; i < arrayLength; i++) {
+        initial = fn(initial, array[i], i, array);
+    }
+
+    return initial;
 }
 
 /*
@@ -27,6 +57,7 @@ function reduce(array, fn, initial) {
  Функция должна удалить указанное свойство из указанного объекта
  */
 function deleteProperty(obj, prop) {
+    delete obj[prop];
 }
 
 /*
@@ -35,6 +66,7 @@ function deleteProperty(obj, prop) {
  Функция должна проверить существует ли укзаанное свойство в указанном объекте
  */
 function hasProperty(obj, prop) {
+    return obj.hasOwnProperty(prop);
 }
 
 /*
@@ -42,6 +74,13 @@ function hasProperty(obj, prop) {
  Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
  */
 function getEnumProps(obj) {
+    let arr = [];
+
+    for (let prop in obj) {
+        arr.push(prop);
+    }
+
+    return arr;
 }
 
 /*
@@ -49,6 +88,13 @@ function getEnumProps(obj) {
  Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
  */
 function upperProps(obj) {
+    let arr = [];
+
+    for (let prop in obj) {
+        arr.push(prop.toUpperCase());
+    }
+
+    return arr;
 }
 
 /*
@@ -56,6 +102,37 @@ function upperProps(obj) {
  Напишите аналог встроенного метода slice для работы с массивами
  */
 function slice(array, from, to) {
+    let arrayLength = array.length;
+    let newArr = [];
+
+    if (from == undefined && to == undefined) {
+        from = 0;
+        to = arrayLength;
+    }
+
+    if (to == undefined || to >= arrayLength) {
+        to = arrayLength;
+    }
+
+    if ( from === to || from > Math.abs(to) || from >= arrayLength) {
+        return [];
+    }
+
+    if (from < 0) {
+        from = 0;
+    }
+
+    if (to < 0) {
+        to = to + arrayLength;
+    } else if (to < 0 && Math.abs(to) > arrayLength) {
+        return [];
+    }
+
+    for (let i = from; i < to; i++) {
+        newArr.push(array[i]);
+    }
+
+    return newArr;
 }
 
 /*
@@ -64,6 +141,13 @@ function slice(array, from, to) {
  Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
  */
 function createProxy(obj) {
+    let proxy = new Proxy(obj, {
+        get(target, prop) {
+            return target[prop] ** 2;
+        }
+    });
+
+    return proxy;
 }
 
 export {
