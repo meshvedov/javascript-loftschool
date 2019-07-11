@@ -7,6 +7,11 @@
  * @return {Element}
  */
 function createDivWithText(text) {
+    let element = document.createElement('div');
+
+    element.innerHTML = text;
+
+    return element;
 }
 
 /**
@@ -16,6 +21,11 @@ function createDivWithText(text) {
  * @return {Element}
  */
 function createAWithHref(hrefValue) {
+    let element = document.createElement('a');
+
+    element.setAttribute('href', hrefValue);
+
+    return element;
 }
 
 /**
@@ -25,6 +35,9 @@ function createAWithHref(hrefValue) {
  * @param {Element} where - куда вставлять
  */
 function prepend(what, where) {
+    let el = where.firstChild;
+
+    where.insertBefore(what, el);
 }
 
 /**
@@ -42,6 +55,18 @@ function prepend(what, where) {
  * т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
+    let els = where.getElementsByTagName('p');
+    let length = els.length;
+    let arr = [];
+
+    for (let i = 0; i < length; i++) {
+        let el = els[i].previousElementSibling;
+
+        if (el == null) continue;
+        arr.push(el);
+    }
+
+    return arr;
 }
 
 /**
@@ -55,8 +80,8 @@ function findAllPSiblings(where) {
 function findError(where) {
     var result = [];
 
-    for (var i = 0; i < where.childNodes.length; i++) {
-        result.push(where.childNodes[i].innerText);
+    for (var i = 0; i < where.children.length; i++) {
+        result.push(where.children[i].innerText);
     }
 
     return result;
@@ -76,6 +101,14 @@ function findError(where) {
  * должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
+
+    for(let i = 0, len = where.childNodes.length; i < len; i++) {
+        let el = where.childNodes[i];
+        if (el.nodeType === 3) {
+            where.removeChild(el);
+            len = where.childNodes.length;
+        }
+    }
 }
 
 /**
@@ -89,6 +122,7 @@ function deleteTextNodes(where) {
  * должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
+
 }
 
 /**
