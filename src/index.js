@@ -123,15 +123,11 @@ function deleteTextNodes(where) {
  * должно быть преобразовано в <span><div><b></b></div><p></p></span>
  */
 function deleteTextNodesRecursive(where) {
-    if (where.firstChild != null) {
-        if (where.firstChild.nodeType === 3) {
-            where.removeChild(where.firstChild);
-            deleteTextNodesRecursive(where);
-        } else if (where.firstChild.nodeType === 1) {
-            deleteTextNodesRecursive(where.firstChild);
+    deleteTextNodes(where);
+    if (where.children.length != 0) {
+        for (let i = 0; i < where.children.length; i++) {
+            deleteTextNodesRecursive(where.children[i]);
         }
-    } else {
-        deleteTextNodesRecursive(where.parentNode.nextSibling);
     }
 }
 
@@ -158,6 +154,37 @@ function deleteTextNodesRecursive(where) {
  * }
  */
 function collectDOMStat(root) {
+    var obj = {
+        // tags: {},
+        // classes: {},
+        // texts: 0
+    };
+
+    if (root.nodeType === 1) {
+        obj.tags[root.nodeName] = obj.tags[root.nodeName] === undefined ? 1 : ++(obj.tags[root.nodeName]);
+        if (root.classList.length > 0) {
+            root.classList.forEach(el => obj.classes[el] = obj.classes[el] === undefined ? 1 : ++(obj.classes[el]));
+        }
+    }
+
+    let nodes = root.childNodes;
+
+    for (let i = 0, len = nodes.length == undefined ? 1 : nodes.length; i < len; i++) {
+        let node = nodes[i];
+
+        if (node.nodeType == 3) {
+            ++obj.texts;
+        } else if (node.nodeType == 1) {
+            obj.tags[node.nodeName] = obj.tags[node.nodeName] == undefined ? 1 : ++(obj.tags[node.nodeName]);
+            if (node.classList.length > 0) {
+                node.classList.forEach(el => obj.classes[el] = obj.classes[el] == undefined ? 1 : ++(obj.classes[el]));
+            }
+
+            collectDOMStat.bind(obj, node);
+        }
+    }
+
+    return obj;
 }
 
 /**
