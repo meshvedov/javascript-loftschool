@@ -3,7 +3,7 @@
  * Создать страницу с кнопкой
  * При нажатии на кнопку должен создаваться div со случайными размерами, цветом и позицией
  * Необходимо предоставить возможность перетаскивать созданные div при помощи drag and drop
- * Запрощено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
+ * Запрещено использовать сторонние библиотеки. Разрешено пользоваться только тем, что встроено в браузер
  */
 
 /**
@@ -23,6 +23,17 @@ let homeworkContainer = document.querySelector('#homework-container');
  * @return {Element}
  */
 function createDiv() {
+    let el = document.createElement('div');
+
+    el.className = 'draggable-div';
+    el.style.backgroundColor = 'red';
+    el.style.position = 'absolute';
+    el.style.top = Math.floor(Math.random() * 100) + '%';
+    el.style.left = Math.floor(Math.random() * 100) + '%';
+    el.style.width = Math.floor(Math.random() * 100) + 100 + 'px';
+    el.style.height = Math.floor(Math.random() * 100) + 100 + 'px';
+
+    return el;
 }
 
 /**
@@ -31,6 +42,40 @@ function createDiv() {
  * @param {Element} target
  */
 function addListeners(target) {
+    let x = 0,
+        y = 0,
+        isMove = false;
+    let currentDiv = target.getBoundingClientRect();
+
+    let moveHandler = e => {
+        debugger;
+        target.style.left = (e.clientX - x) + currentDiv.left + 'px';
+        target.style.top = (e.clientY - y) + currentDiv.top + 'px';
+    };
+
+    target.addEventListener('mousedown', e => {
+        debugger;
+        x = e.clientX;
+        y = e.clientY;
+        isMove = true;
+
+        target.addEventListener('mousemove', moveHandler);
+    });
+
+    target.addEventListener('mouseup', e => {
+        debugger;
+        currentDiv = target.getBoundingClientRect();
+        x = 0;
+        y = 0;
+        target.removeEventListener('mousemove', moveHandler);
+    });
+
+    target.addEventListener('mouseout', e => {
+        currentDiv = target.getBoundingClientRect();
+        x = 0;
+        y = 0;
+        target.removeEventListener('mousemove', moveHandler);
+    })
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
