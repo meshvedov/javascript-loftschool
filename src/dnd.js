@@ -24,9 +24,12 @@ let homeworkContainer = document.querySelector('#homework-container');
  */
 function createDiv() {
     let el = document.createElement('div');
+    let red = Math.floor(Math.random() * 250);
+    let green = Math.floor(Math.random() *250);
+    let blue = Math.floor(Math.random() * 250);
 
     el.className = 'draggable-div';
-    el.style.backgroundColor = 'red';
+    el.style.backgroundColor = `rgb(${red}, ${green}, ${blue}`;
     el.style.position = 'absolute';
     el.style.top = Math.floor(Math.random() * 100) + '%';
     el.style.left = Math.floor(Math.random() * 100) + '%';
@@ -44,8 +47,7 @@ function createDiv() {
 function addListeners(target) {
     let x = 0,
         y = 0,
-        isMove = false;
-    let currentDiv = target.getBoundingClientRect();
+        currentDiv;
 
     let moveHandler = e => {
         debugger;
@@ -55,27 +57,20 @@ function addListeners(target) {
 
     target.addEventListener('mousedown', e => {
         debugger;
+        currentDiv = target.getBoundingClientRect();
         x = e.clientX;
         y = e.clientY;
-        isMove = true;
 
-        target.addEventListener('mousemove', moveHandler);
+        document.addEventListener('mousemove', moveHandler);
     });
 
     target.addEventListener('mouseup', e => {
         debugger;
-        currentDiv = target.getBoundingClientRect();
         x = 0;
         y = 0;
-        target.removeEventListener('mousemove', moveHandler);
+        document.removeEventListener('mousemove', moveHandler);
     });
 
-    target.addEventListener('mouseout', e => {
-        currentDiv = target.getBoundingClientRect();
-        x = 0;
-        y = 0;
-        target.removeEventListener('mousemove', moveHandler);
-    })
 }
 
 let addDivButton = homeworkContainer.querySelector('#addDiv');
