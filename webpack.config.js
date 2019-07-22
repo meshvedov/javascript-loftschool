@@ -1,74 +1,50 @@
-const HtmlPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const rules = require('./webpack.config.rules');
-const fs = require('fs');
-const path = require('path');
+let webpack = require('webpack');
+let HtmlPlugin = require('html-webpack-plugin');
+let CleanWebpackPlugin = require('clean-webpack-plugin');
+let ExtractTextPlugin = require('extract-text-webpack-plugin');
+let loaders = require('./webpack.config.loaders')();
+let path = require('path');
 
-const root = path.resolve('src');
-const files = fs.readdirSync(root)
-    .reduce((all, current) => {
-        const ext = path.extname(current);
-        const name = path.basename(current, ext);
-        const absPath = path.join(root, current);
-
-        if (!all.hasOwnProperty(ext)) {
-            all[ext] = [];
-        }
-
-        all[ext].push({ name, absPath });
-
-        return all;
-    }, { '.js': [], '.hbs': [] });
-const entries = files['.js'].reduce((all, { name, absPath }) => {
-    all[name] = absPath;
-
-    return all;
-}, {});
-const html = files['.hbs']
-    .filter(file => entries.hasOwnProperty(file.name))
-    .map((file) => {
-        return new HtmlPlugin({
-            title: file.name,
-            template: file.absPath,
-            filename: `${file.name}.html`,
-            chunks: [file.name]
-        });
-    });
-
-if (!html.length || !files['.hbs'].find(file => file.name === 'index')) {
-    html.push(new HtmlPlugin({
-        title: 'index',
-        template: 'index.hbs',
-        chunks: ['index']
-    }));
-}
+loaders.push({
+    test: /\.css$/,
+    loader: ExtractTextPlugin.extract({
+        fallbackLoader: 'style-loader',
+        loader: 'css-loader'
+    })
+});
 
 module.exports = {
-    entry: entries,
+    entry: {
+        main: './src/index.js',
+        cookie: './src/cookie.js'
+    },
     output: {
         filename: '[name].[hash].js',
         path: path.resolve('dist')
     },
-    mode: 'development',
     devtool: 'source-map',
     module: {
-        rules: [
-            ...rules,
-            {
-                test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    'css-loader'
-                ]
-            }
-        ]
+        loaders
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            filename: '[name].css',
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            compress: {
+                drop_debugger: false
+            }
         }),
-        ...html,
+        new ExtractTextPlugin('styles.css'),
+        new HtmlPlugin({
+            title: 'Main Homework',
+            template: 'index.hbs',
+            chunks: ['main']
+        }),
+        new HtmlPlugin({
+            title: 'Div Drag And Drop',
+            template: 'cookie.hbs',
+            filename: 'cookie.html',
+            chunks: ['cookie']
+        }),
         new CleanWebpackPlugin(['dist'])
     ]
 };
