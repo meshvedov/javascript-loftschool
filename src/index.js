@@ -28,6 +28,7 @@ function closeWindow(window) {
  * @param value - значение
  */
 function createCookie(name, value) {
+    document.cookie = `${name}=` + encodeURIComponent(value);
 }
 
 /**
@@ -36,6 +37,15 @@ function createCookie(name, value) {
  * @param name - имя
  */
 function deleteCookie(name) {
+    let cookies = document.cookie.split('; ');
+
+    cookies.forEach(el => {
+        if (el.search(name) !== -1) {
+            el += '; max-age=0';
+
+            return document.cookie = el;
+        }
+    });
 }
 
 export {
