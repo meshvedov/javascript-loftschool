@@ -80,7 +80,7 @@ describe('ДЗ 7.2 - Cookie editor', () => {
 
         it('если при добавлении указано имя существующей cookie, то в таблице не должно быть дублей', () => {
             let cookies;
-
+            debugger;
             addNameInput.value = 'test-cookie-name-1';
             addValueInput.value = 'test-cookie-value-1';
             addButton.click();

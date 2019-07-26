@@ -43,4 +43,41 @@ filterNameInput.addEventListener('keyup', function() {
 });
 
 addButton.addEventListener('click', () => {
+    debugger;
+    document.cookie = `${addNameInput.value}=${addValueInput.value}`;
+
+    let cookie = {
+        name: addNameInput.value,
+        value: addValueInput.value
+    };
+    let isCookie = Object.keys(cookies).some(name => name === cookie.name);
+
+    if (isCookie) {
+        cookies[cookie.name] = cookie.value;
+        updateTable(cookies);
+    } else {
+        cookies[cookie.name] = cookie.value;
+        addRow(cookie);
+    }
 });
+
+let cookies = {};
+
+function updateTable(cookies) {
+    for (let cookie in cookies) {
+        addRow({
+            name: cookie,
+            value: cookies[cookie] });
+    }
+}
+
+function addRow(cookie) {
+    const tableRow = `
+        <td>${cookie.name}</td>
+        <td>${cookie.value}</td>
+        <button>Удалить</button
+    `;
+    const fragment = document.createElement('tr');
+    fragment.innerHTML = tableRow;
+    listTable.appendChild(fragment);
+}
